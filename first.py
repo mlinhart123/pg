@@ -1,7 +1,10 @@
-# sudy_nebo_lichy
-number = int(input("zadejte cislo: "))
-if (number % 2) == 0:
-  print("{0} cislo je sudé".format(number))
-else:
-  print("{0} císlo je liché".format(number))
-  
+# sudy_nebo_lichy 
+
+def sudy_nebo_lichy(cislo):
+    if cislo % 2 == 0:
+        print(f"{cislo} je sudé cislo.")
+    else:
+        print(f"{cislo} je liché cislo.")
+
+sudy_nebo_lichy(5)
+sudy_nebo_lichy(1000000)
