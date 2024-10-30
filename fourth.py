@@ -1,50 +1,62 @@
 def je_tah_mozny(figurka, cilova_pozice, obsazene_pozice):
-    """
-    Ověří, zda se figurka může přesunout na danou pozici.
-
-    :param figurka: Slovník s informacemi o figurce (typ, pozice).
-    :param cilova_pozice: Cílová pozice na šachovnici jako n-tice (řádek, sloupec).
-    :param obsazene_pozice: Množina obsazených pozic na šachovnici.
     
-    :return: True, pokud je tah možný, jinak False.
-    """
-    # Implementace pravidel pohybu pro různé figury zde.
-
-    typ = figurka["typ"]
     pozice = figurka["pozice"]
-    
-    x1, y1 = pozice
-    x2, y2 = cilova_pozice
-    
-    if not (1 <= x2 <= 8 and 1 <= y2 <= 8):
+    typ_figurky = figurka["typ"]
+
+    if not (1 <= cilova_pozice[0] <= 8 and 1 <= cilova_pozice[1] <= 8):
         return False
-    
+
     if cilova_pozice in obsazene_pozice:
         return False
 
-    if typ == "král":
-        return abs(x2 - x1) <= 1 and abs(y2 - y1) <= 1
-    
-    elif typ == "dáma":
-        return x1 == x2 or y1 == y2 or abs(x2 - x1) == abs(y2 - y1)
-    
-    elif typ == "střelec":
-        return abs(x2 - x1) == abs(y2 - y1)
-    
-    elif typ == "věž":
-        return x1 == x2 or y1 == y2
-    
-    elif typ == "jezdec":
-        return (abs(x2 - x1), abs(y2 - y1)) in [(2, 1), (1, 2)]
-    
-    elif typ == "pěšec":
-        if y2 == y1 + 1 and x1 == x2 and cilova_pozice not in obsazene_pozice:
-            return True
-        elif y2 == y1 + 1 and abs(x2 - x1) == 1 and cilova_pozice in obsazene_pozice:
-            return True
-        elif y1 == 2 and y2 == 4 and x1 == x2 and (x2, y2) not in obsazene_pozice:
-            return True
-        return False
+    def je_cesta_volna(pocatek, cil):
+        x1, y1 = pocatek
+        x2, y2 = cil
+        dx = 1 if x2 > x1 else -1 if x2 < x1 else 0
+        dy = 1 if y2 > y1 else -1 if y2 < y1 else 0
+        x, y = x1 + dx, y1 + dy
+        while (x, y) != (x2, y2):
+            if (x, y) in obsazene_pozice:
+                return False
+            x, y = x + dx, y + dy
+        return True
+
+    if typ_figurky == "pěšec":
+        if pozice[1] != cilova_pozice[1]:
+            return False
+        if pozice[0] >= cilova_pozice[0]:
+            return False
+        if pozice[0] == 2:
+            if cilova_pozice[0] - pozice[0] <= 2:
+                return je_cesta_volna(pozice, cilova_pozice)
+        else:
+            return cilova_pozice[0] - pozice[0] == 1 
+
+    elif typ_figurky == "jezdec":
+        dx = abs(pozice[0] - cilova_pozice[0])
+        dy = abs(pozice[1] - cilova_pozice[1])
+        return (dx == 2 and dy == 1) or (dx == 1 and dy == 2)
+
+    elif typ_figurky == "věž":
+        if pozice[0] != cilova_pozice[0] and pozice[1] != cilova_pozice[1]:
+            return False
+        return je_cesta_volna(pozice, cilova_pozice)
+
+    elif typ_figurky == "střelec":
+        if abs(pozice[0] - cilova_pozice[0]) != abs(pozice[1] - cilova_pozice[1]):
+            return False
+        return je_cesta_volna(pozice, cilova_pozice)
+
+    elif typ_figurky == "dáma":
+        je_pohyb_spravny = (
+            pozice[0] == cilova_pozice[0] or 
+            pozice[1] == cilova_pozice[1] or  
+            abs(pozice[0] - cilova_pozice[0]) == abs(pozice[1] - cilova_pozice[1]) 
+        )
+        return je_pohyb_spravny and je_cesta_volna(pozice, cilova_pozice)
+
+    elif typ_figurky == "král":
+        return max(abs(pozice[0] - cilova_pozice[0]), abs(pozice[1] - cilova_pozice[1])) == 1
 
     return False
 
