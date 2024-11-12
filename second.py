@@ -5,7 +5,7 @@ desitky = ["", "deset", "dvacet", "třicet", "čtyřicet", "padesát", "šedesá
 specialni_desitky = ["", "jedenáct", "dvanáct", "třináct", "čtrnáct", "patnáct", "šestnáct", "sedmnáct", "osmnáct", "devatenáct"]
 stovky = ["", "sto", "dvě stě", "tři sta", "čtyři sta", "pět set", "šest set", "sedm set", "osm set", "devět set"]
 
-def cislo_na_text(cislo):
+def cislo_text(cislo):
     if cislo == 0:
         return "nula"
     
